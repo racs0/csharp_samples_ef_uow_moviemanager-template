@@ -20,7 +20,6 @@ namespace MovieManager.Persistence
       Debug.Write(configuration.ToString());
       string connectionString = configuration["ConnectionStrings:DefaultConnection"];
       optionsBuilder.UseSqlServer(connectionString);
-
+        }
     }
-  }
 }

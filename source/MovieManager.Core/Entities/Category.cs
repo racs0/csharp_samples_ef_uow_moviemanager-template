@@ -10,5 +10,15 @@ namespace MovieManager.Core.Entities
         public String CategoryName { get; set; }
 
         public ICollection<Movie> Movies { get; set; }
+
+        public Category()
+        {
+
+        }
+
+        public Category(string categoryName)
+        {
+            CategoryName = categoryName;
+        }
     }
 }

@@ -19,5 +19,18 @@ namespace MovieManager.Core.Entities
 
         [Required]
         public int Year { get; set; }
+
+        public Movie()
+        {
+
+        }
+
+        public Movie(string title, Category category, int duration, int year)
+        {
+            Title = title;
+            Category = category;
+            Duration = duration;
+            Year = year;
+        }
     }
 }

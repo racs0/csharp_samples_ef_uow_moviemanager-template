@@ -42,12 +42,16 @@ namespace MovieManager.ImportConsole
                     return;
                 }
 
-                var categories = Enumerable.Empty<Movie>();
+                var categories = movies.GroupBy(c => c.Category).Select(s => s.Key);
                 //TODO: Kategorien ermitteln
+
+                
 
                 Console.WriteLine($"  Es wurden {movies.Count()} Movies in {categories.Count()} Kategorien eingelesen!");
 
                 //TODO: Movies und Kategorien in die Datenbank schreiben
+                unitOfWork.MovieRepository.AddRange(movies);
+                unitOfWork.CategoryRepository.AddRange(categories);
 
                 Console.WriteLine();
             }
@@ -59,35 +63,46 @@ namespace MovieManager.ImportConsole
             Console.WriteLine("        Statistik");
             Console.WriteLine("***************************");
 
+            using(UnitOfWork uow = new UnitOfWork()) {
 
-            // Längster Film: Bei mehreren gleichlangen Filmen, soll jener angezeigt werden, dessen Titel im Alphabet am weitesten vorne steht.
-            // Die Dauer des längsten Films soll in Stunden und Minuten angezeigt werden!
-            //TODO
-
-
-            // Top Kategorie:
-            //   - Jene Kategorie mit den meisten Filmen.
-            //TODO
+                // Längster Film: Bei mehreren gleichlangen Filmen, soll jener angezeigt werden, dessen Titel im Alphabet am weitesten vorne steht.
+                // Die Dauer des längsten Films soll in Stunden und Minuten angezeigt werden!
+                //TODO
 
 
-            // Jahr der Kategorie "Action":
-            //  - In welchem Jahr wurden die meisten Action-Filme veröffentlicht?
-            //TODO
+                // Top Kategorie:
+                //   - Jene Kategorie mit den meisten Filmen.
+                //TODO
+                var mostCategoryMovies = uow.CategoryRepository
+                    .GetAll()
+                    .OrderByDescending(s => s.Movies.Count)
+                    .Select(s => s.CategoryName)
+                    .First();
+
+                Console.WriteLine("Kategorie mit den meisten Filmen: {0}",mostCategoryMovies);
 
 
-            // Kategorie Auswertung (Teil 1):
-            //   - Eine Liste in der je Kategorie die Anzahl der Filme und deren Gesamtdauer dargestellt wird.
-            //   - Sortiert nach dem Namen der Kategorie (aufsteigend).
-            //   - Die Gesamtdauer soll in Stunden und Minuten angezeigt werden!
-            //TODO
+                // Jahr der Kategorie "Action":
+                //  - In welchem Jahr wurden die meisten Action-Filme veröffentlicht?
+                //TODO
+                var mostActionMovies = uow.MovieRepository
+                    .GetAll()
+                    .Select(s => s.Category.CategoryName == "Action");
+
+                // Kategorie Auswertung (Teil 1):
+                //   - Eine Liste in der je Kategorie die Anzahl der Filme und deren Gesamtdauer dargestellt wird.
+                //   - Sortiert nach dem Namen der Kategorie (aufsteigend).
+                //   - Die Gesamtdauer soll in Stunden und Minuten angezeigt werden!
+                //TODO
 
 
-            // Kategorie Auswertung (Teil 2):
-            //   - Alle Kategorien und die durchschnittliche Dauer der Filme der Kategorie
-            //   - Absteigend sortiert nach der durchschnittlichen Dauer der Filme.
-            //     Bei gleicher Dauer dann nach dem Namen der Kategorie aufsteigend sortieren.
-            //   - Die Gesamtdauer soll in Stunden, Minuten und Sekunden angezeigt werden!
-            //TODO
+                // Kategorie Auswertung (Teil 2):
+                //   - Alle Kategorien und die durchschnittliche Dauer der Filme der Kategorie
+                //   - Absteigend sortiert nach der durchschnittlichen Dauer der Filme.
+                //     Bei gleicher Dauer dann nach dem Namen der Kategorie aufsteigend sortieren.
+                //   - Die Gesamtdauer soll in Stunden, Minuten und Sekunden angezeigt werden!
+                //TODO
+            }
         }
 
         private static string GetDurationAsString(double minutes, bool withSeconds = true)
